@@ -15,5 +15,5 @@ make
 To run:
 
 ```
-./nw <N> 
+./seq_nw <N> 
 ```
