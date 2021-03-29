@@ -18,10 +18,10 @@ def timerun(program, args) :
         # so I used /usr/bin/time instead. Since I could not figure out why the output of 'time' was not
         # coming back to stdin, I use the -o (output file) and -a (append) option to just output the real
         # execution time ( thats where '-f' and '%e' comes from ) to the file.
-        p = subprocess.Popen(['/usr/bin/time', '-o', 'runtimes.txt', '-a', '-f', '%e', './' + program, str(n)],
-                             stdout=subprocess.PIPE)
-
-        # Read back from stdin, print where we are (not required, but its nice)
+        #p = subprocess.Popen(['/usr/bin/time', '-o', 'runtimes.txt', '-a', '-f', '%e', './' + program, str(n)],
+        #                     stdout=subprocess.PIPE)
+        p = subprocess.Popen(['./' + program, str(n)], stdout=subprocess.PIPE)
+        # Read back from stdin, print where we are
         output = p.communicate()[0]
         sys.stdout.write(str(i) + ':\tseq_nw(' + str(n) + ') = ' + str(output))
         i += 1
@@ -56,7 +56,7 @@ def main():
     plt.grid()
 
     # save the plot as a SVG image
-    plt.savefig('execution_times.svg')
+    plt.savefig('execution_times.png')
 
     # show the pylab plot window
     

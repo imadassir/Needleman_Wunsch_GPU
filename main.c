@@ -65,13 +65,20 @@ int main(int argc, char**argv) {
         reference[r] = rand()%256;
     }
     generateQuery(reference, query, N);
+    
+    //Open file for writing in appending mode
+    FILE *fp;
+    fp = fopen("runtimes.txt", "a");
 
     // Compute on CPU
     startTime(&timer);
     nw_cpu(reference, query, matrix_cpu, N);
     stopTime(&timer);
-    printElapsedTime(timer, "CPU time", CYAN);
-
+	float t = ((float) ((timer.endTime.tv_sec - timer.startTime.tv_sec) \
+                + (timer.endTime.tv_usec - timer.startTime.tv_usec)/1.0e6));    
+    //printElapsedTime(timer, "CPU time", CYAN);
+	fprintf(fp,"%f\n", t);
+	
     // Free memory
     free(reference);
     free(query);
