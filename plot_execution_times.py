@@ -10,6 +10,8 @@ def timerun(program, args) :
     print('Starting timed execution of ' + program + ' with ' + str(len(args)) + ' arguments.')
     i = 1
 
+    subprocess.Popen(['rm', 'runtimes.txt'], stdout=subprocess.PIPE)
+
     # Execute program, once for each n argument
     for n in args:
 
@@ -31,7 +33,7 @@ def timerun(program, args) :
     f = open('runtimes.txt', 'r')
     times = f.read().splitlines()
 
-    subprocess.Popen(['rm', 'runtimes.txt'], stdout=subprocess.PIPE)
+    #subprocess.Popen(['rm', 'runtimes.txt'], stdout=subprocess.PIPE)
 
     return times
 
