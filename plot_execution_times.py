@@ -2,8 +2,8 @@ import subprocess
 import string
 import numpy as np
 import sys
-import pylab  # matplotlib
 import matplotlib.pyplot as plt
+import time
 
 
 def timerun(program, args) :
@@ -33,7 +33,7 @@ def timerun(program, args) :
     f = open('runtimes.txt', 'r')
     times = f.read().splitlines()
 
-    #subprocess.Popen(['rm', 'runtimes.txt'], stdout=subprocess.PIPE)
+    subprocess.Popen(['rm', 'runtimes.txt'], stdout=subprocess.PIPE)
 
     return times
 
@@ -41,24 +41,28 @@ def timerun(program, args) :
 def main():
 
     # Arguments
-    args = np.arange(10, 500, 50)
-    args2 = np.arange(501, 20001, 500)
-    args = np.concatenate((args, args2), axis=None)
-
+    args = np.arange(5,16,1)
+    args = 2**args
+    print(args) 
+    args_sq = np.square(args) /(2.5*(10**8))
+	
     # Compute the runtimes of the algorithm for various N
     times = timerun('seq_nw', args)
     times = [float(x) for x in times]
 
-    # Plot it with pylab
-    plt.figure(figsize=(14, 4))
+    #plt.figure(figsize=(14, 4))
     plt.xlabel('N', fontsize=12)
     plt.ylabel('Execution Time (seconds)', fontsize=12)
     plt.title('Needleman-Wunsch Execution Times vs Input Size', fontsize=14, weight='bold')
-    plt.plot(args, times, 'r+-')
+    plt.plot(args, times, 'r+-', label = "NW")
+    plt.plot(args,args_sq, 'b+-', label = "N^2")
+    plt.xscale('log',basex=2)
+    plt.yscale('log',basey=2)
+    plt.legend()	
     plt.grid()
 
     # save the plot as a SVG image
-    plt.savefig('execution_times.png')
+    plt.savefig('execution_times2.png')
 
     # show the pylab plot window
     
