@@ -20,7 +20,6 @@ To run:
 
 ```
 ./nw [flags]
-
 ```
 
 Optional flags:
