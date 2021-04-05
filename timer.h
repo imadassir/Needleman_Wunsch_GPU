@@ -21,7 +21,7 @@ static void stopTime(Timer* timer) {
     gettimeofday(&(timer->endTime), NULL);
 }
 
-static void printElapsedTime(Timer timer, const char* s, enum PrintColor color) {
+static void printElapsedTime(Timer timer, const char* s, enum PrintColor color = NONE) {
     float t = ((float) ((timer.endTime.tv_sec - timer.startTime.tv_sec) \
                 + (timer.endTime.tv_usec - timer.startTime.tv_usec)/1.0e6));
     switch(color) {
