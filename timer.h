@@ -3,6 +3,7 @@
 #define _TIMER_H_
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/time.h>
 
 enum PrintColor { NONE, GREEN, DGREEN, CYAN };
@@ -32,6 +33,12 @@ static void printElapsedTime(Timer timer, const char* s, enum PrintColor color) 
     if(color != NONE) {
         printf("\033[0m");
     }
+}
+
+static void printElapsedTimeToFile(Timer timer, FILE *fp){
+	float t = ((float) ((timer.endTime.tv_sec - timer.startTime.tv_sec) \
+                + (timer.endTime.tv_usec - timer.startTime.tv_usec)/1.0e6));    
+	fprintf(fp,"%f\n", t);
 }
 
 #endif

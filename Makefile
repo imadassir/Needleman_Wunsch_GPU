@@ -2,7 +2,7 @@
 NVCC        = nvcc
 NVCC_FLAGS  = -O3
 OBJ         = main.o
-EXE         = seq_nw
+EXE         = nw
 
 
 default: $(EXE)

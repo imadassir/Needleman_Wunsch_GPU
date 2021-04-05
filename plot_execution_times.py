@@ -10,7 +10,8 @@ def timerun(program, args) :
     print('Starting timed execution of ' + program + ' with ' + str(len(args)) + ' arguments.')
     i = 1
 
-    subprocess.Popen(['rm', 'runtimes.txt'], stdout=subprocess.PIPE)
+    subprocess.Popen(['rm', 'runtimes_seq.txt'], stdout=subprocess.PIPE)
+    subprocess.Popen(['rm', 'runtimes_gpu0.txt'], stdout=subprocess.PIPE)
 
     # Execute program, once for each n argument
     for n in args:
@@ -22,20 +23,23 @@ def timerun(program, args) :
         # execution time ( thats where '-f' and '%e' comes from ) to the file.
         #p = subprocess.Popen(['/usr/bin/time', '-o', 'runtimes.txt', '-a', '-f', '%e', './' + program, str(n)],
         #                     stdout=subprocess.PIPE)
-        p = subprocess.Popen(['./' + program, str(n)], stdout=subprocess.PIPE)
+        p = subprocess.Popen(['./' + program, '-0', '-N', str(n)], stdout=subprocess.PIPE)
         # Read back from stdin, print where we are
         output = p.communicate()[0]
-        sys.stdout.write(str(i) + ':\tseq_nw(' + str(n) + ') = ' + str(output))
+        sys.stdout.write(str(i) + ':\tnw(' + str(n) + ') = ' + str(output))
         i += 1
     print('done')
 
     # Open up, read and return the times in the output file
-    f = open('runtimes.txt', 'r')
-    times = f.read().splitlines()
+    f_seq = open('runtimes_seq.txt', 'r')
+    times_seq = f_seq.read().splitlines()
+    f_gpu0= open('runtimes_gpu0.txt', 'r')
+    times_gpu0 = f_gpu0.read().splitlines()
 
-    subprocess.Popen(['rm', 'runtimes.txt'], stdout=subprocess.PIPE)
+    subprocess.Popen(['rm', 'runtimes_seq.txt'], stdout=subprocess.PIPE)
+    subprocess.Popen(['rm', 'runtimes_gpu0.txt'], stdout=subprocess.PIPE)
 
-    return times
+    return times_seq, times_gpu0
 
 
 def main():
@@ -47,14 +51,16 @@ def main():
     args_sq = np.square(args) /(2.5*(10**8))
 	
     # Compute the runtimes of the algorithm for various N
-    times = timerun('seq_nw', args)
-    times = [float(x) for x in times]
+    times_seq, times_gpu0 = timerun('nw', args)
+    times_seq = [float(x) for x in times_seq]
+    times_gpu0 = [float(x) for x in times_gpu0]
 
     #plt.figure(figsize=(14, 4))
     plt.xlabel('N', fontsize=12)
     plt.ylabel('Execution Time (seconds)', fontsize=12)
-    plt.title('Needleman-Wunsch Execution Times vs Input Size', fontsize=14, weight='bold')
-    plt.plot(args, times, 'r+-', label = "NW")
+    plt.title('Needleman-Wunsch Execution Time vs Input Size', fontsize=14, weight='bold')
+    plt.plot(args, times_seq, 'r+-', label = "Sequential NW")
+    plt.plot(args, times_gpu0, 'g+-', label = "Parallel NW v0")
     plt.plot(args,args_sq, 'b+-', label = "N^2")
     plt.xscale('log',basex=2)
     plt.yscale('log',basey=2)
@@ -62,7 +68,7 @@ def main():
     plt.grid()
 
     # save the plot as a SVG image
-    plt.savefig('execution_times2.png')
+    plt.savefig('execution_times.png')
 
     # show the pylab plot window
     
