@@ -13,8 +13,8 @@ __global__ void nw_gpu0_kernel (unsigned char * reference_d, unsigned char* quer
 		q = position;
 	}
 	else if (round == 2) {
-		r = N - iteration + position + 1;
-		q = N - position;	
+		r = N - position - 1;
+		q = N - iteration + position;	
 	}
 	if( position < iteration ) {
 		int top     = (q == 0)?((r + 1)*DELETION):(matrix_d[(q - 1)*N + r]);
