@@ -39,7 +39,7 @@ void nw_gpu0(unsigned char* reference_d, unsigned char* query_d, int* matrix_d, 
 		nw_gpu0_kernel <<< numBlocks, numThreadsPerBlock >>> (reference_d, query_d, matrix_d, N, i, 1);
 		cudaDeviceSynchronize();
 	}
-	for (int i = N-1; i>0; i++){
+	for (int i = N-1; i>0; i--){
 		int numThreadsPerBlock = BLOCK_DIM;
 		int numBlocks = (i + numThreadsPerBlock -1)/numThreadsPerBlock;
 		nw_gpu0_kernel <<< numBlocks, numThreadsPerBlock >>> (reference_d, query_d, matrix_d, N, i, 2);
