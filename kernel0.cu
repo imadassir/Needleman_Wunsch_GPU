@@ -2,7 +2,7 @@
 #include "common.h"
 #include "timer.h"
 
-
+#define BLOCK_DIM 128
 
 __global__ void nw_gpu0_kernel (unsigned char * reference_d, unsigned char* query_d, int* matrix_d, unsigned int N, unsigned int iteration, unsigned int round) {
 	int position = blockDim.x*blockIdx.x + threadIdx.x;
@@ -34,15 +34,15 @@ __global__ void nw_gpu0_kernel (unsigned char * reference_d, unsigned char* quer
 
 void nw_gpu0(unsigned char* reference_d, unsigned char* query_d, int* matrix_d, unsigned int N) {
 	for (int i = 1; i < N+1; i++) {
-		int BLOCK_DIM = 128;
-		int numBlocks = (i+BLOCK_DIM-1)/(BLOCK_DIM);
-		nw_gpu0_kernel <<< numBlocks, BLOCK_DIM >>> (reference_d, query_d, matrix_d, N, i, 1);
+		int numThreadsPerBlock = BLOCK_DIM;
+		int numBlocks = (i+numThreadsPerBlock-1)/(numThreadsPerBlock);
+		nw_gpu0_kernel <<< numBlocks, numThreadsPerBlock >>> (reference_d, query_d, matrix_d, N, i, 1);
 		cudaDeviceSynchronize();
 	}
 	for (int i = N-1; i>0; i++){
-		int BLOCK_DIM = 128;
-		int numBlocks = (i + BLOCK_DIM -1)/BLOCK_DIM;
-		nw_gpu0_kernel <<< numBlocks, BLOCK_DIM >>> (reference_d, query_d, matrix_d, N, i, 2);
+		int numThreadsPerBlock = BLOCK_DIM;
+		int numBlocks = (i + numThreadsPerBlock -1)/numThreadsPerBlock;
+		nw_gpu0_kernel <<< numBlocks, numThreadsPerBlock >>> (reference_d, query_d, matrix_d, N, i, 2);
 		cudaDeviceSynchronize();
 	}
 
