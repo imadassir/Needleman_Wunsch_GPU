@@ -15,12 +15,6 @@ def timerun(program, args) :
 
     # Execute program, once for each n argument
     for n in args:
-
-        # This was really annoying. Build the arguments to the time system call to the time command.
-        # First of all, for whatever reason 'time' didn't work correctly with any arguments other than -p,
-        # so I used /usr/bin/time instead. Since I could not figure out why the output of 'time' was not
-        # coming back to stdin, I use the -o (output file) and -a (append) option to just output the real
-        # execution time ( thats where '-f' and '%e' comes from ) to the file.
         #p = subprocess.Popen(['/usr/bin/time', '-o', 'runtimes.txt', '-a', '-f', '%e', './' + program, str(n)],
         #                     stdout=subprocess.PIPE)
         p = subprocess.Popen(['./' + program, '-0', '-N', str(n)], stdout=subprocess.PIPE)
@@ -47,8 +41,6 @@ def main():
     # Arguments
     args = np.arange(5,16,1)
     args = 2**args
-    print(args) 
-    args_sq = np.square(args) /(2.5*(10**8))
 	
     # Compute the runtimes of the algorithm for various N
     times_seq, times_gpu0 = timerun('nw', args)
@@ -61,7 +53,6 @@ def main():
     plt.title('Needleman-Wunsch Execution Time vs Input Size', fontsize=14, weight='bold')
     plt.plot(args, times_seq, 'r+-', label = "Sequential NW")
     plt.plot(args, times_gpu0, 'g+-', label = "Parallel NW v0")
-    plt.plot(args,args_sq, 'b+-', label = "N^2")
     plt.xscale('log',basex=2)
     plt.yscale('log',basey=2)
     plt.legend()	
