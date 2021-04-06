@@ -34,13 +34,13 @@ __global__ void nw_gpu0_kernel (unsigned char * reference_d, unsigned char* quer
 
 void nw_gpu0(unsigned char* reference_d, unsigned char* query_d, int* matrix_d, unsigned int N) {
 	for (int i = 1; i < N+1; i++) {
-		int BLOCK_DIM = (i<512)?32:64;
+		int BLOCK_DIM = 128;
 		int numBlocks = (i+BLOCK_DIM-1)/(BLOCK_DIM);
 		nw_gpu0_kernel <<< numBlocks, BLOCK_DIM >>> (reference_d, query_d, matrix_d, N, i, 1);
 		cudaDeviceSynchronize();
 	}
 	for (int i = N-1; i>0; i++){
-		int BLOCK_DIM = (i<512)?32:64;
+		int BLOCK_DIM = 128;
 		int numBlocks = (i + BLOCK_DIM -1)/BLOCK_DIM;
 		nw_gpu0_kernel <<< numBlocks, BLOCK_DIM >>> (reference_d, query_d, matrix_d, N, i, 2);
 		cudaDeviceSynchronize();
