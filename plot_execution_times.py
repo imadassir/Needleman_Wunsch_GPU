@@ -18,7 +18,7 @@ def timerun(program, args) :
     for n in args:
         #p = subprocess.Popen(['/usr/bin/time', '-o', 'runtimes.txt', '-a', '-f', '%e', './' + program, str(n)],
         #                     stdout=subprocess.PIPE)
-        p = subprocess.Popen(['./' + program, '-0', '1', '-N', str(n)], stdout=subprocess.PIPE)
+        p = subprocess.Popen(['./' + program, '-0', '-1', '-N', str(n)], stdout=subprocess.PIPE)
         # Read back from stdin, print where we are
         output = p.communicate()[0]
         sys.stdout.write(str(i) + ':\tnw(' + str(n) + ') = ' + str(output))
@@ -37,7 +37,7 @@ def timerun(program, args) :
     subprocess.Popen(['rm', 'runtimes_gpu0.txt'], stdout=subprocess.PIPE)
     subprocess.Popen(['rm', 'runtimes_gpu1.txt'], stdout=subprocess.PIPE)
 
-    return times_seq, times_gpu0
+    return times_seq, times_gpu0, times_gpu1
 
 
 def main():
@@ -47,7 +47,7 @@ def main():
     args = 2**args
 	
     # Compute the runtimes of the algorithm for various N
-    times_seq, times_gpu0 = timerun('nw', args)
+    times_seq, times_gpu0, times_gpu1 = timerun('nw', args)
     times_seq = [float(x) for x in times_seq]
     times_gpu0 = [float(x) for x in times_gpu0]
     times_gpu1 = [float(x) for x in times_gpu1]
@@ -64,11 +64,9 @@ def main():
     plt.legend()	
     plt.grid()
 
-    # save the plot as a SVG image
+    # save the plot as a PNG image
     plt.savefig('execution_times.png')
-
-    # show the pylab plot window
-    
+	
     plt.show()
 
 
