@@ -12,12 +12,13 @@ def timerun(program, args) :
 
     subprocess.Popen(['rm', 'runtimes_seq.txt'], stdout=subprocess.PIPE)
     subprocess.Popen(['rm', 'runtimes_gpu0.txt'], stdout=subprocess.PIPE)
+    subprocess.Popen(['rm', 'runtimes_gpu1.txt'], stdout=subprocess.PIPE)
 
     # Execute program, once for each n argument
     for n in args:
         #p = subprocess.Popen(['/usr/bin/time', '-o', 'runtimes.txt', '-a', '-f', '%e', './' + program, str(n)],
         #                     stdout=subprocess.PIPE)
-        p = subprocess.Popen(['./' + program, '-0', '-N', str(n)], stdout=subprocess.PIPE)
+        p = subprocess.Popen(['./' + program, '-0', '1', '-N', str(n)], stdout=subprocess.PIPE)
         # Read back from stdin, print where we are
         output = p.communicate()[0]
         sys.stdout.write(str(i) + ':\tnw(' + str(n) + ') = ' + str(output))
@@ -29,9 +30,12 @@ def timerun(program, args) :
     times_seq = f_seq.read().splitlines()
     f_gpu0= open('runtimes_gpu0.txt', 'r')
     times_gpu0 = f_gpu0.read().splitlines()
+    f_gpu1= open('runtimes_gpu1.txt', 'r')
+    times_gpu1 = f_gpu1.read().splitlines()
 
     subprocess.Popen(['rm', 'runtimes_seq.txt'], stdout=subprocess.PIPE)
     subprocess.Popen(['rm', 'runtimes_gpu0.txt'], stdout=subprocess.PIPE)
+    subprocess.Popen(['rm', 'runtimes_gpu1.txt'], stdout=subprocess.PIPE)
 
     return times_seq, times_gpu0
 
@@ -46,6 +50,7 @@ def main():
     times_seq, times_gpu0 = timerun('nw', args)
     times_seq = [float(x) for x in times_seq]
     times_gpu0 = [float(x) for x in times_gpu0]
+    times_gpu1 = [float(x) for x in times_gpu1]
 
     #plt.figure(figsize=(14, 4))
     plt.xlabel('N', fontsize=12)
@@ -53,6 +58,7 @@ def main():
     plt.title('Needleman-Wunsch Execution Time vs Input Size', fontsize=14, weight='bold')
     plt.plot(args, times_seq, 'r+-', label = "Sequential NW")
     plt.plot(args, times_gpu0, 'g+-', label = "Parallel NW v0")
+    plt.plot(args, times_gpu1, 'b+-', label = "Parallel NW v1")
     plt.xscale('log',basex=2)
     plt.yscale('log',basey=2)
     plt.legend()	
