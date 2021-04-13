@@ -2,7 +2,7 @@
 #include "common.h"
 #include "timer.h"
 
-#define BLOCK_DIM 128
+#define BLOCK_DIM 32
 
 __global__ void nw_gpu1_kernel (unsigned char * reference_d, unsigned char* query_d, int* matrix_d, unsigned int N, unsigned int round) {
 	
