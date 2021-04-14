@@ -41,7 +41,11 @@ def timerun(program, args) :
 
 
 def main():
-
+    # Get system information
+    p = subprocess.Popen(['cat', '/proc/cpuinfo'], stdout=subprocess.PIPE)
+    # Read back from stdin, print
+    output = p.communicate()[0]
+    sys.stdout.write('\n\n\nProcessor info' +  str(output) + '\n' )
     # Arguments
     args = np.arange(5,16,1)
     args = 2**args
