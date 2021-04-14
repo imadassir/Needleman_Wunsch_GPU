@@ -2,7 +2,7 @@
 #include "common.h"
 #include "timer.h"
 
-#define BLOCK_DIM 128
+#define BLOCK_DIM 32
 
 __global__ void nw_gpu1_kernel (unsigned char * reference_d, unsigned char* query_d, int* matrix_d, unsigned int N, unsigned int round) {
 	
@@ -22,7 +22,7 @@ __global__ void nw_gpu1_kernel (unsigned char * reference_d, unsigned char* quer
 		}
 		//Loop limit is used as a boundary check
 		//If the block is not complete and some elements are out of bounds, we can loop fewer times
-		loop_limit = (((N-q_offset) > BLOCK_DIM && (N-r_offset) > BLOCK_DIM) || N%BLOCK_DIM == 0)? 2*BLOCK_DIM : BLOCK_DIM + N%BLOCK_DIM;
+		loop_limit = (((N-q_offset) > BLOCK_DIM && (N-r_offset) > BLOCK_DIM) || N%BLOCK_DIM == 0)? 2*BLOCK_DIM : ((N-q_offset) < BLOCK_DIM && (N-r_offset) < BLOCK_DIM)? 2*(N % BLOCK_DIM)  : BLOCK_DIM + N % BLOCK_DIM;
 	}
 	__syncthreads();
 
