@@ -4,6 +4,7 @@ import numpy as np
 import sys
 import matplotlib.pyplot as plt
 import time
+from statistics import mean
 
 
 def timerun(program, args) :
@@ -32,12 +33,14 @@ def timerun(program, args) :
     times_gpu0 = f_gpu0.read().splitlines()
     f_gpu1= open('runtimes_gpu1.txt', 'r')
     times_gpu1 = f_gpu1.read().splitlines()
-
+    
+    div= [float(i)/float(j) for i,j in zip(times_gpu0,times_gpu1)]
+    speedup = mean(div)
     subprocess.Popen(['rm', 'runtimes_seq.txt'], stdout=subprocess.PIPE)
     subprocess.Popen(['rm', 'runtimes_gpu0.txt'], stdout=subprocess.PIPE)
     subprocess.Popen(['rm', 'runtimes_gpu1.txt'], stdout=subprocess.PIPE)
 
-    return times_seq, times_gpu0, times_gpu1
+    return times_seq, times_gpu0, times_gpu1, speedup
 
 
 def main():
@@ -46,16 +49,17 @@ def main():
     # Read back from stdin, print
     output = p.communicate()[0]
     sys.stdout.write('\n\n\nProcessor info' +  str(output) + '\n' )
+
     # Arguments
-    args = np.arange(5,16,1)
+    args = np.arange(5,13,1)
     args = 2**args
 	
     # Compute the runtimes of the algorithm for various N
-    times_seq, times_gpu0, times_gpu1 = timerun('nw', args)
+    times_seq, times_gpu0, times_gpu1, speedup = timerun('nw', args)
     times_seq = [float(x) for x in times_seq]
     times_gpu0 = [float(x) for x in times_gpu0]
     times_gpu1 = [float(x) for x in times_gpu1]
-
+    print('Average speedup:' + str(speedup))
     #plt.figure(figsize=(14, 4))
     plt.xlabel('N', fontsize=12)
     plt.ylabel('Execution Time (seconds)', fontsize=12)
