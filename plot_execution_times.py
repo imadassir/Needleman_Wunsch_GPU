@@ -14,12 +14,13 @@ def timerun(program, args) :
     subprocess.Popen(['rm', 'runtimes_seq.txt'], stdout=subprocess.PIPE)
     subprocess.Popen(['rm', 'runtimes_gpu0.txt'], stdout=subprocess.PIPE)
     subprocess.Popen(['rm', 'runtimes_gpu1.txt'], stdout=subprocess.PIPE)
+    subprocess.Popen(['rm', 'runtimes_gpu2.txt'], stdout=subprocess.PIPE)
 
     # Execute program, once for each n argument
     for n in args:
         #p = subprocess.Popen(['/usr/bin/time', '-o', 'runtimes.txt', '-a', '-f', '%e', './' + program, str(n)],
         #                     stdout=subprocess.PIPE)
-        p = subprocess.Popen(['./' + program, '-0', '-1', '-N', str(n)], stdout=subprocess.PIPE)
+        p = subprocess.Popen(['./' + program, '-0', '-1', '-2', '-N', str(n)], stdout=subprocess.PIPE)
         # Read back from stdin, print where we are
         output = p.communicate()[0]
         sys.stdout.write(str(i) + ':\tnw(' + str(n) + ') = ' + str(output))
@@ -33,14 +34,19 @@ def timerun(program, args) :
     times_gpu0 = f_gpu0.read().splitlines()
     f_gpu1= open('runtimes_gpu1.txt', 'r')
     times_gpu1 = f_gpu1.read().splitlines()
+    f_gpu2= open('runtimes_gpu2.txt', 'r')
+    times_gpu2 = f_gpu2.read().splitlines()
     
-    div= [float(i)/float(j) for i,j in zip(times_gpu0,times_gpu1)]
-    speedup = mean(div)
+    div0_2= [float(i)/float(j) for i,j in zip(times_gpu0,times_gpu2)]
+    div1_2= [float(i)/float(j) for i,j in zip(times_gpu1,times_gpu2)]
+    speedup0_2 = mean(div0_2)
+    speedup1_2 = mean(div1_2)
     subprocess.Popen(['rm', 'runtimes_seq.txt'], stdout=subprocess.PIPE)
     subprocess.Popen(['rm', 'runtimes_gpu0.txt'], stdout=subprocess.PIPE)
     subprocess.Popen(['rm', 'runtimes_gpu1.txt'], stdout=subprocess.PIPE)
+    subprocess.Popen(['rm', 'runtimes_gpu2.txt'], stdout=subprocess.PIPE)
 
-    return times_seq, times_gpu0, times_gpu1, speedup
+    return times_seq, times_gpu0, times_gpu1, times_gpu2, speedup0_2, speedup1_2
 
 
 def main():
@@ -55,11 +61,13 @@ def main():
     args = 2**args
 	
     # Compute the runtimes of the algorithm for various N
-    times_seq, times_gpu0, times_gpu1, speedup = timerun('nw', args)
+    times_seq, times_gpu0, times_gpu1, times_gpu2, speedup0_2, speedup1_2 = timerun('nw', args)
     times_seq = [float(x) for x in times_seq]
     times_gpu0 = [float(x) for x in times_gpu0]
     times_gpu1 = [float(x) for x in times_gpu1]
-    print('Average speedup:' + str(speedup))
+    times_gpu2 = [float(x) for x in times_gpu2]
+    print('Average speedup with reference to GPU v0:' + str(speedup0_2))
+    print('Average speedup with reference to GPU v1:' + str(speedup1_2))
     #plt.figure(figsize=(14, 4))
     plt.xlabel('N', fontsize=12)
     plt.ylabel('Execution Time (seconds)', fontsize=12)
@@ -67,6 +75,7 @@ def main():
     plt.plot(args, times_seq, 'r+-', label = "Sequential NW")
     plt.plot(args, times_gpu0, 'g+-', label = "Parallel NW v0")
     plt.plot(args, times_gpu1, 'b+-', label = "Parallel NW v1")
+    plt.plot(args, times_gpu2, 'o+-', label = "Parallel NW v2")
     plt.xscale('log',basex=2)
     plt.yscale('log',basey=2)
     plt.legend()	
