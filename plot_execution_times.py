@@ -57,7 +57,7 @@ def main():
     sys.stdout.write('\n\n\nProcessor info' +  str(output) + '\n' )
 
     # Arguments
-    args = np.arange(5,13,1)
+    args = np.arange(5,14,1)
     args = 2**args
 	
     # Compute the runtimes of the algorithm for various N
@@ -75,7 +75,7 @@ def main():
     plt.plot(args, times_seq, 'r+-', label = "Sequential NW")
     plt.plot(args, times_gpu0, 'g+-', label = "Parallel NW v0")
     plt.plot(args, times_gpu1, 'b+-', label = "Parallel NW v1")
-    plt.plot(args, times_gpu2, 'o+-', label = "Parallel NW v2")
+    plt.plot(args, times_gpu2, 'm+-', label = "Parallel NW v2")
     plt.xscale('log',basex=2)
     plt.yscale('log',basey=2)
     plt.legend()	
