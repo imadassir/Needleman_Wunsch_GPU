@@ -71,7 +71,7 @@ def main():
     sys.stdout.write('\n\n\nProcessor info' +  str(output) + '\n')
 
     # Arguments
-    args = np.arange(5,14,1)
+    args = np.arange(5,16,1)
     args = 2**args
 	
     # Compute the runtimes of the algorithm for various N
@@ -85,9 +85,9 @@ def main():
     print('Average speedup with reference to GPU v1:' + str(speedup1_3))
     print('Average speedup with reference to GPU v2:' + str(speedup2_3))
     
-    print('Speedup for N=32K with reference to GPU v0:' + str(speedup32K_0_3))
-    print('Speedup for N=32K with reference to GPU v1:' + str(speedup32K_1_3))
-    print('Speedup for N=32K with reference to GPU v2:' + str(speedup32K_2_3))
+    print('Speedup for N=32K with reference to GPU v0:' + str(speedup_32K_0_3))
+    print('Speedup for N=32K with reference to GPU v1:' + str(speedup_32K_1_3))
+    print('Speedup for N=32K with reference to GPU v2:' + str(speedup_32K_2_3))
     #plt.figure(figsize=(14, 4))
     plt.xlabel('N', fontsize=12)
     plt.ylabel('Execution Time (seconds)', fontsize=12)
