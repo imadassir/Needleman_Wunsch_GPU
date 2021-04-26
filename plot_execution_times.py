@@ -61,8 +61,7 @@ def timerun(program, args) :
     subprocess.Popen(['rm', 'runtimes_gpu2.txt'], stdout=subprocess.PIPE)
     subprocess.Popen(['rm', 'runtimes_gpu3.txt'], stdout=subprocess.PIPE)
 
-    return times_seq, times_gpu0, times_gpu1, times_gpu2, times_gpu3, speedup0_2, speedup1_2, speedup0_3, speedup1_3, speedup2_3, speedup_32K_1_3, speedup_32K_1_3, speedup_32K_1_3
-
+    return times_seq, times_gpu0, times_gpu1, times_gpu2, times_gpu3, speedup0_2, speedup1_2, speedup0_3, speedup1_3, speedup2_3, speedup_32K_0_3, speedup_32K_1_3, speedup_32K_2_3
 
 def main():
     # Get system information
@@ -76,7 +75,7 @@ def main():
     args = 2**args
 	
     # Compute the runtimes of the algorithm for various N
-    times_seq, times_gpu0, times_gpu1, times_gpu2, times_gpu3, speedup0_2, speedup1_2, speedup0_3, speedup1_3, speedup2_3, speedup_32K_1_3, speedup_32K_1_3, speedup_32K_1_3 = timerun('nw', args)
+    times_seq, times_gpu0, times_gpu1, times_gpu2, times_gpu3, speedup0_2, speedup1_2, speedup0_3, speedup1_3, speedup2_3, speedup_32K_0_3, speedup_32K_1_3, speedup_32K_2_3 = timerun('nw', args)
     times_seq = [float(x) for x in times_seq]
     times_gpu0 = [float(x) for x in times_gpu0]
     times_gpu1 = [float(x) for x in times_gpu1]
