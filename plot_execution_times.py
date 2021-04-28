@@ -40,17 +40,20 @@ def timerun(program, args) :
     f_gpu3 = open('runtimes_gpu3.txt', 'r')
     times_gpu3 = f_gpu3.read().splitlines()
     
-    div0_2 = [float(i)/float(j) for i,j in zip(times_gpu0,times_gpu2)]
-    div1_2 = [float(i)/float(j) for i,j in zip(times_gpu1,times_gpu2)]
-    speedup0_2 = mean(div0_2)
-    speedup1_2 = mean(div1_2)
+    #div0_2 = [float(i)/float(j) for i,j in zip(times_gpu0,times_gpu2)]
+    #div1_2 = [float(i)/float(j) for i,j in zip(times_gpu1,times_gpu2)]
+    #speedup0_2 = mean(div0_2)
+    #speedup1_2 = mean(div1_2)
     
+    divs_3 = [float(i)/float(j) for i,j in zip(times_seq,times_gpu3)]
     div0_3 = [float(i)/float(j) for i,j in zip(times_gpu0,times_gpu3)]
     div1_3 = [float(i)/float(j) for i,j in zip(times_gpu1,times_gpu3)]
     div2_3 = [float(i)/float(j) for i,j in zip(times_gpu2,times_gpu3)]
+    speedups_3 = mean(divs_3)
     speedup0_3 = mean(div0_3)
     speedup1_3 = mean(div1_3)
     speedup2_3 = mean(div2_3)
+    speedup_32K_s_3 = float(times_seq[-1])/float(times_gpu3[-1])
     speedup_32K_0_3 = float(times_gpu0[-1])/float(times_gpu3[-1])
     speedup_32K_1_3 = float(times_gpu1[-1])/float(times_gpu3[-1])
     speedup_32K_2_3 = float(times_gpu2[-1])/float(times_gpu3[-1])
@@ -61,7 +64,7 @@ def timerun(program, args) :
     subprocess.Popen(['rm', 'runtimes_gpu2.txt'], stdout=subprocess.PIPE)
     subprocess.Popen(['rm', 'runtimes_gpu3.txt'], stdout=subprocess.PIPE)
 
-    return times_seq, times_gpu0, times_gpu1, times_gpu2, times_gpu3, speedup0_2, speedup1_2, speedup0_3, speedup1_3, speedup2_3, speedup_32K_0_3, speedup_32K_1_3, speedup_32K_2_3
+    return times_seq, times_gpu0, times_gpu1, times_gpu2, times_gpu3, speedup0_2, speedup1_2, speedups_3, speedup0_3, speedup1_3, speedup2_3, speedup_32K_s_3, speedup_32K_0_3, speedup_32K_1_3, speedup_32K_2_3
 
 def main():
     # Get system information
@@ -75,16 +78,19 @@ def main():
     args = 2**args
 	
     # Compute the runtimes of the algorithm for various N
-    times_seq, times_gpu0, times_gpu1, times_gpu2, times_gpu3, speedup0_2, speedup1_2, speedup0_3, speedup1_3, speedup2_3, speedup_32K_0_3, speedup_32K_1_3, speedup_32K_2_3 = timerun('nw', args)
+    times_seq, times_gpu0, times_gpu1, times_gpu2, times_gpu3, speedup0_2, speedup1_2, speedups_3, speedup0_3, speedup1_3, speedup2_3, speedup_32K_s_3, speedup_32K_0_3, speedup_32K_1_3, speedup_32K_2_3 = timerun('nw', args)
     times_seq = [float(x) for x in times_seq]
     times_gpu0 = [float(x) for x in times_gpu0]
     times_gpu1 = [float(x) for x in times_gpu1]
     times_gpu2 = [float(x) for x in times_gpu2]
     times_gpu3 = [float(x) for x in times_gpu3]
+    
+    print('Average speedup with reference to CPU:' + str(speedups_3))
     print('Average speedup with reference to GPU v0:' + str(speedup0_3))
     print('Average speedup with reference to GPU v1:' + str(speedup1_3))
     print('Average speedup with reference to GPU v2:' + str(speedup2_3))
     
+    print('Speedup for N=32K with reference to GPU v0:' + str(speedup_32K_s_3))
     print('Speedup for N=32K with reference to GPU v0:' + str(speedup_32K_0_3))
     print('Speedup for N=32K with reference to GPU v1:' + str(speedup_32K_1_3))
     print('Speedup for N=32K with reference to GPU v2:' + str(speedup_32K_2_3))
